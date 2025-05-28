@@ -1,8 +1,8 @@
 const APP_CONFIG = {
   GIST_ID: '237f0263b3b32cfb9332a5f63258b0c3',
-  GITHUB_USERNAMES: ['joaogabrielsilvarabelo'],
+  GITHUB_USERNAMES: ['joaogabrielsilvarabelo', 'Frozen-Heat'],
   PROFILE_IMAGE_URL: 'assets/images/perfil.png',
-  featuredProjectCount: 3,
+  featuredProjectCount: 6,
   animationDelay: 100,
   cacheTTL: 1000 * 60 * 60
 };
@@ -14,6 +14,7 @@ let uiState = { projectsLoaded: false, curriculoLoaded: false };
 const mockCurriculo = {
   nome: "João Gabriel",
   contato: { email: "joaosrabelo@gmail.com", github: "https://github.com/joaogabrielsilvarabelo", telefone: "(00) 1234-5678" },
+  bemvindo: "Olá visitante! Se esse texto aparecer, talvez algo ruim aconteceu!",
   sobreMim: "Olá visitante! Se esse texto aparecer, talvez algo ruim aconteceu!",
   objetivos: "Contribuir para projetos inovadores e aprender continuamente.",
   formacao: [{ curso: "Engenharia de Software", periodo: "2024-", instituicao: "Icev" }],
@@ -21,14 +22,40 @@ const mockCurriculo = {
   experiencias: []
 };
 
+async function fetchWithRetry(url, options = {}, retries = 3, delay = 1000) {
+  for (let i = 0; i < retries; i++) {
+    try {
+      const response = await fetch(url, {
+        ...options,
+        headers: {
+          'Accept': 'application/vnd.github.v3+json',
+          // Optional: Add GitHub token to increase rate limits
+          // 'Authorization': 'token YOUR_TOKEN'
+        }
+      });
+      if (!response.ok) {
+        if (response.status === 403 || response.status === 429) {
+          throw new Error('Rate limit exceeded');
+        }
+        throw new Error(`HTTP ${response.status}`);
+      }
+      return await response.json();
+    } catch (error) {
+      if (i < retries - 1 && error.message.includes('Rate limit')) {
+        await new Promise(resolve => setTimeout(resolve, delay * Math.pow(2, i)));
+        continue;
+      }
+      throw error;
+    }
+  }
+}
+
 async function fetchGitHubProjects() {
   try {
     const repos = [];
     for (const username of APP_CONFIG.GITHUB_USERNAMES) {
-      const response = await fetch(`https://api.github.com/users/${username}/repos?sort=created&direction=desc&per_page=10`);
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      const userRepos = await response.json();
-      repos.push(...userRepos);
+      const userRepos = await fetchWithRetry(`https://api.github.com/users/${username}/repos?sort=created&direction=desc&per_page=10`);
+      repos.push(...userRepos.map(repo => ({ ...repo, username })));
     }
     repos.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
     cachedData.githubProjects = repos;
@@ -37,13 +64,16 @@ async function fetchGitHubProjects() {
     renderProjects(repos);
   } catch (error) {
     console.error('Erro ao carregar repositórios:', error);
-    showErrorMessage('projetos', 'Não foi possível carregar os projetos do GitHub.');
+    showErrorMessage('projetos', `Não foi possível carregar os projetos do GitHub: ${error.message}. Usando dados de exemplo.`);
+    renderProjects([]); 
   }
 }
 
 function renderProjects(repos) {
   const featuredContainer = document.getElementById('featured-projects');
   const projectTrack = document.getElementById('github-projects-track');
+  if (!featuredContainer || !projectTrack) return;
+
   featuredContainer.innerHTML = '';
   projectTrack.innerHTML = '';
 
@@ -112,9 +142,11 @@ function updateCurriculoUI(data) {
   document.getElementById('email').innerHTML = `<a href="mailto:${data.contato.email}">${data.contato.email}</a>`;
   document.getElementById('github').href = data.contato.github;
   document.getElementById('github').textContent = data.contato.github.split('/').pop();
-  document.getElementById('telefone').textContent = data.contato.telefone;
-  document.getElementById('sobre-mim-text').textContent = data.sobreMim;
-  document.getElementById('objetivos-text').textContent = data.objetivos;
+  document.getElementById('telefone').textContent = data.contato.telefone || mockCurriculo.contato.telefone;
+  
+  document.getElementById('welcome-text').textContent = data.bemvindo || mockCurriculo.bemvindo;
+  document.getElementById('sobre-mim-text').textContent = data.sobreMim || mockCurriculo.sobreMim;
+  document.getElementById('objetivos-text').textContent = data.objetivos || mockCurriculo.objetivos;
 
   const formacaoList = document.getElementById('formacao-list');
   formacaoList.innerHTML = '';

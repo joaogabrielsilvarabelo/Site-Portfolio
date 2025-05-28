@@ -21,18 +21,23 @@ body.dark-mode {
   --card-bg: #404040;
 }
 
+body {
+  background-image: url('/assets/images/backgrounds/Bliss.gif');
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-attachment: fixed;
+  background-size: cover;
+  background-color: #404040; 
+  color: var(--text-dark);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   font-family: var(--font-main);
-}
-
-body {
-  background: var(--win-bg);
-  color: var(--text-dark);
-  font-size: 12px;
-  line-height: 1.4;
 }
 
 .os-window {
@@ -52,6 +57,11 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.window-controls {
+  display: flex;
+  gap: 2px;
 }
 
 .window-btn {
@@ -117,13 +127,22 @@ header {
   padding: 15px;
   background: var(--card-bg);
   border: 2px inset var(--win-border);
+  position: relative;
+  overflow: hidden;
 }
 
 .section h2 {
   font-size: 14px;
   font-weight: bold;
-  color: var(--primary);
+  color: #ffffff;
   margin-bottom: 10px;
+  display: block;
+  visibility: visible;
+  opacity: 1;
+}
+
+.section:hover {
+  animation: glitch 0.5s infinite alternate;
 }
 
 .timeline {
@@ -172,7 +191,7 @@ header {
 }
 
 .project-card:hover {
-  transform: translate(-2px, -2px);
+  transform: translate(-2px, -2px) skew(-1deg);
 }
 
 .card-header {
@@ -233,41 +252,6 @@ header {
   100% { transform: translateX(-50%); }
 }
 
-.music-player {
-  position: fixed;
-  bottom: 10px;
-  right: 10px;
-  width: 250px;
-  border: 2px solid var(--win-border);
-  background: var(--card-bg);
-}
-
-.music-player .window-content {
-  padding: 10px;
-}
-
-.music-player .cover {
-  width: 40px;
-  height: 40px;
-  margin-bottom: 5px;
-}
-
-.retro-btn {
-  padding: 5px;
-  background: var(--win-bg);
-  border: 2px outset var(--win-border);
-  cursor: pointer;
-}
-
-.retro-btn:hover {
-  background: var(--primary-light);
-}
-
-.retro-slider {
-  background: var(--win-bg);
-  border: 2px inset var(--win-border);
-}
-
 @media (max-width: 768px) {
   .os-window {
     margin: 10px;
@@ -275,9 +259,10 @@ header {
   .projects-grid {
     grid-template-columns: 1fr;
   }
-  .music-player {
-    width: 100%;
-    bottom: 0;
-    right: 0;
-  }
+}
+
+@keyframes glitch {
+  0%, 100% { transform: translate(0); }
+  10% { transform: translate(-2px, 2px); }
+  20% { transform: translate(2px, -2px); }
 }

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Portfólio- João Gabriel</title>
+  <title>Portfólio - João Gabriel</title>
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
@@ -28,6 +28,11 @@
           </div>
         </div>
       </header>
+      
+      <section id="bem-vindo" class="section">
+        <h2>Bem-Vindo(a)</h2>
+        <p id="welcome-text">Carregando...</p>
+      </section>
 
       <section id="sobre-mim" class="section">
         <h2>Sobre Mim</h2>
@@ -66,31 +71,6 @@
     </div>
   </div>
 
-  <div class="os-window music-player">
-    <div class="window-header">
-      <span class="window-title">Media Player</span>
-      <div class="window-controls">
-        <div class="window-btn">x</div>
-      </div>
-    </div>
-    <div class="window-content">
-      <img class="cover" src="" alt="Capa do Álbum">
-      <div class="info">
-        <div class="title">Carregando...</div>
-        <div class="artist">Carregando...</div>
-      </div>
-      <div class="controls">
-        <button class="retro-btn" onclick="prevTrack()">⏪</button>
-        <button class="retro-btn" onclick="togglePlay()">⏯</button>
-        <button class="retro-btn" onclick="nextTrack()">⏩</button>
-        <button class="retro-btn" onclick="toggleMute()">🔇</button>
-      </div>
-      <input type="range" id="volume" class="retro-slider" min="0" max="1" step="0.01" value="0.5">
-      <audio id="player"></audio>
-    </div>
-  </div>
-
-  <script src="js/playlist.js"></script>
   <script src="js/main.js"></script>
 </body>
 </html>
