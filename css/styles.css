@@ -22,7 +22,7 @@ body.dark-mode {
 }
 
 body {
-  background-image: url('/assets/images/backgrounds/Bliss.gif');
+  background-image: url('assets/images/backgrounds/Bliss.gif');
   background-repeat: no-repeat;
   background-position: center center;
   background-attachment: fixed;
