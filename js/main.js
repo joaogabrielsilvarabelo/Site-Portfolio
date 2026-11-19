@@ -29,8 +29,6 @@ async function fetchWithRetry(url, options = {}, retries = 3, delay = 1000) {
         ...options,
         headers: {
           'Accept': 'application/vnd.github.v3+json',
-          // Optional: Add GitHub token to increase rate limits
-          // 'Authorization': 'token YOUR_TOKEN'
         }
       });
       if (!response.ok) {
@@ -157,12 +155,28 @@ function updateCurriculoUI(data) {
     element.className = 'timeline-item';
     element.innerHTML = `
       <div class="timeline-header">
-        <span class="timeline-title">${item.curso}</span>
+        <span class="timeline-title">${item.curso + ' - '}</span>
         <span class="timeline-period">${item.periodo}</span>
       </div>
       <div class="timeline-subtitle">${item.instituicao}</div>
     `;
     formacaoList.appendChild(element);
+  });
+
+  const experienciasList = document.getElementById('experiencias-list');
+  experienciasList.innerHTML = '';
+  data.experiencias.forEach(item => {
+    const element = document.createElement('div');
+    element.className = 'timeline-item';
+    element.innerHTML = `
+      <div class="timeline-header">
+        <span class="timeline-title">${item.cargo + ' - '}</span>
+        <span class="timeline-period">${item.periodo}</span>
+      </div>
+      <div class="timeline-subtitle">${item.organizacao}</div>
+      <div class="timeline-content">${item.descricao}</div>
+    `;
+    experienciasList.appendChild(element);
   });
 
   const projetosRelevantesList = document.getElementById('projetos-relevantes-list');
@@ -172,7 +186,7 @@ function updateCurriculoUI(data) {
     element.className = 'timeline-item';
     element.innerHTML = `
       <div class="timeline-header">
-        <span class="timeline-title">${item.titulo}</span>
+        <span class="timeline-title">${item.titulo + ' - '}</span>
         <span class="timeline-period">${item.periodo}</span>
       </div>
       <div class="timeline-subtitle">${item.organizacao}</div>
@@ -180,6 +194,8 @@ function updateCurriculoUI(data) {
     `;
     projetosRelevantesList.appendChild(element);
   });
+
+  
 }
 
 function saveToLocalStorage(key, value) {
