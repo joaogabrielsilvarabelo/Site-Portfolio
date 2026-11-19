@@ -122,6 +122,10 @@ header {
   color: var(--primary-light);
 }
 
+.contact-item-title {
+  font-size: 12px;
+}
+
 .section {
   margin-bottom: 20px;
   padding: 15px;

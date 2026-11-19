@@ -140,6 +140,8 @@ function updateCurriculoUI(data) {
   document.title = `Meu Currículo - ${data.nome}`;
   document.getElementById('nome-header').textContent = data.nome;
   document.getElementById('email').innerHTML = `<a href="mailto:${data.contato.email}">${data.contato.email}</a>`;
+  document.getElementById('linkedin').href = data.contato.linkedin;
+  document.getElementById('linkedin').textContent = data.contato.linkedin.split('in/').pop().split('-').slice(0, -1).join('-'); 
   document.getElementById('github').href = data.contato.github;
   document.getElementById('github').textContent = data.contato.github.split('/').pop();
   document.getElementById('telefone').textContent = data.contato.telefone || mockCurriculo.contato.telefone;
